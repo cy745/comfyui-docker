@@ -7,3 +7,4 @@ storage/output/*
 !storage/output/.gitkeep
 storage/custom_nodes/*
 !storage/custom_nodes/.gitkeep
+!storage/custom_nodes/ComfyUI-Sharp

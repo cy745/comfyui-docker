@@ -1,0 +1,3 @@
+[submodule "storage/custom_nodes/ComfyUI-Sharp"]
+	path = storage/custom_nodes/ComfyUI-Sharp
+	url = https://github.com/PozzettiAndrea/ComfyUI-Sharp.git
