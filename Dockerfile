@@ -26,9 +26,10 @@ RUN ln -s /usr/bin/python3 /usr/bin/python && \
 # Install PyTorch with CUDA 12.1 support
 RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Clone ComfyUI
+# Clone ComfyUI (pinned to v0.22.0 with additional fixes)
 WORKDIR /app
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git .
+RUN git clone https://github.com/comfyanonymous/ComfyUI.git . && \
+    git checkout cd45f42a
 
 # Install ComfyUI Python dependencies
 RUN pip install -r requirements.txt
@@ -36,8 +37,9 @@ RUN pip install -r requirements.txt
 # Pre-install common dependencies for custom nodes
 RUN pip install opencv-python-headless scipy einops transformers diffusers accelerate
 
-# Clone ComfyUI-Manager as default custom node
-RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /default_custom_nodes/ComfyUI-Manager
+# Clone ComfyUI-Manager as default custom node (pinned)
+RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /default_custom_nodes/ComfyUI-Manager && \
+    cd /default_custom_nodes/ComfyUI-Manager && git checkout d6f480c9
 
 # Create ComfyUI runtime directories
 RUN mkdir -p /app/models /app/input /app/output /app/custom_nodes
