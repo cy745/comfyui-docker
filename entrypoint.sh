@@ -15,9 +15,13 @@ fi
 
 # Install any pending custom node dependencies
 for node_dir in /app/custom_nodes/*/; do
+    name=$(basename "$node_dir")
     if [ -f "$node_dir/requirements.txt" ]; then
-        echo "Installing dependencies for $(basename $node_dir)..."
+        echo "Installing dependencies for $name (requirements.txt)..."
         pip install -r "$node_dir/requirements.txt" -q
+    elif [ -f "$node_dir/pyproject.toml" ]; then
+        echo "Installing $name (pyproject.toml)..."
+        pip install -e "$node_dir" -q
     fi
 done
 
