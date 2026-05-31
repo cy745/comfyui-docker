@@ -4,3 +4,6 @@
 [submodule "storage/custom_nodes/ComfyUI-GeometryPack"]
 	path = storage/custom_nodes/ComfyUI-GeometryPack
 	url = https://github.com/PozzettiAndrea/ComfyUI-GeometryPack.git
+[submodule "storage/custom_nodes/ComfyUI-Easy-Use"]
+	path = storage/custom_nodes/ComfyUI-Easy-Use
+	url = https://github.com/yolain/ComfyUI-Easy-Use.git
