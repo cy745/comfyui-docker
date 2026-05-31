@@ -5,6 +5,8 @@ storage/input/*
 !storage/input/.gitkeep
 storage/output/*
 !storage/output/.gitkeep
+storage/workflows/*
+!storage/workflows/.gitkeep
 storage/custom_nodes/*
 !storage/custom_nodes/.gitkeep
 !storage/custom_nodes/ComfyUI-*
