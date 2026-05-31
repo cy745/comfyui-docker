@@ -13,8 +13,7 @@ services:
       - ./storage/output:/app/output
       # Persist custom nodes (ComfyUI-Manager auto-installed on first run)
       - ./storage/custom_nodes:/app/custom_nodes
-      # Persist workflows (both template and user-created)
-      - ./storage/workflows:/app/workflows
+      # Persist user-created workflows
       - ./storage/user/default/workflows:/app/user/default/workflows
     environment:
       - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
