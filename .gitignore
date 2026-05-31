@@ -1,0 +1,9 @@
+.env
+storage/models/*
+!storage/models/.gitkeep
+storage/input/*
+!storage/input/.gitkeep
+storage/output/*
+!storage/output/.gitkeep
+storage/custom_nodes/*
+!storage/custom_nodes/.gitkeep
