@@ -13,3 +13,6 @@
 [submodule "storage/custom_nodes/ComfyUI_UltimateSDUpscale"]
 	path = storage/custom_nodes/ComfyUI_UltimateSDUpscale
 	url = https://github.com/ssitu/ComfyUI_UltimateSDUpscale.git
+[submodule "storage/custom_nodes/ComfyUI-Impact-Subpack"]
+	path = storage/custom_nodes/ComfyUI-Impact-Subpack
+	url = https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git
