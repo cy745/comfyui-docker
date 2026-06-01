@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender-dev \
+    cuda-nvcc-12-1 \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN ln -s /usr/bin/python3 /usr/bin/python && \
@@ -36,6 +38,9 @@ RUN pip install -r requirements.txt
 
 # Pre-install common dependencies for custom nodes
 RUN pip install opencv-python-headless scipy einops transformers diffusers accelerate
+
+# Install attention optimizations for SeedVR2
+RUN pip install sageattention flash-attn --no-build-isolation
 
 # Clone ComfyUI-Manager as default custom node (pinned)
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /default_custom_nodes/ComfyUI-Manager && \
