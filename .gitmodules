@@ -16,3 +16,6 @@
 [submodule "storage/custom_nodes/ComfyUI-Impact-Subpack"]
 	path = storage/custom_nodes/ComfyUI-Impact-Subpack
 	url = https://github.com/ltdrdata/ComfyUI-Impact-Subpack.git
+[submodule "storage/custom_nodes/ComfyUI-SeedVR2_VideoUpscaler"]
+	path = storage/custom_nodes/ComfyUI-SeedVR2_VideoUpscaler
+	url = https://github.com/numz/ComfyUI-SeedVR2_VideoUpscaler.git
