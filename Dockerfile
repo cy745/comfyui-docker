@@ -3,10 +3,11 @@ FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
 LABEL description="ComfyUI with NVIDIA GPU support"
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    PIP_NO_CACHE_DIR=1 \
     PYTHONUNBUFFERED=1
 
-# Install system dependencies
+# ============================================================
+# Stage 1: System dependencies (rarely changes)
+# ============================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
@@ -18,29 +19,51 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsm6 \
     libxext6 \
     libxrender-dev \
-    cuda-nvcc-12-1 \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 RUN ln -s /usr/bin/python3 /usr/bin/python && \
     pip install --upgrade pip
 
-# Install PyTorch with CUDA 12.1 support
-RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# ============================================================
+# Stage 2: PyTorch with CUDA (rarely changes)
+# BuildKit --mount=type=cache persists pip downloads across builds
+# ============================================================
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# Clone ComfyUI (pinned to v0.22.0 with additional fixes)
-WORKDIR /app
-RUN git clone https://github.com/comfyanonymous/ComfyUI.git . && \
-    git checkout cd45f42a
-
-# Install ComfyUI Python dependencies
-RUN pip install -r requirements.txt
+# ============================================================
+# Stage 3: ComfyUI Python dependencies
+# Fetch requirements.txt from pinned commit BEFORE cloning repo
+# This keeps the pip layer cached even when ComfyUI code changes
+# ============================================================
+RUN --mount=type=cache,target=/root/.cache/pip \
+    wget -O /tmp/requirements.txt https://raw.githubusercontent.com/comfyanonymous/ComfyUI/cd45f42a/requirements.txt && \
+    pip install -r /tmp/requirements.txt && \
+    rm /tmp/requirements.txt
 
 # Pre-install common dependencies for custom nodes
-RUN pip install opencv-python-headless scipy einops transformers diffusers accelerate
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install opencv-python-headless scipy einops transformers diffusers accelerate
 
-# Install attention optimizations for SeedVR2
-RUN pip install sageattention flash-attn --no-build-isolation
+# ============================================================
+# Stage 4: Clone ComfyUI source code (fast, only this layer invalidates)
+# ============================================================
+WORKDIR /app
+RUN git init && \
+    git remote add origin https://github.com/comfyanonymous/ComfyUI.git && \
+    git fetch origin cd45f42a --depth 1 && \
+    git checkout cd45f42a
+
+# ============================================================
+# Stage 5: Build dependencies for flash-attn (late to avoid cache break)
+# ============================================================
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    cuda-nvcc-12-1 build-essential && \
+    rm -rf /var/lib/apt/lists/*
+
+# Attention optimizations for SeedVR2
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install sageattention flash-attn --no-build-isolation
 
 # Clone ComfyUI-Manager as default custom node (pinned)
 RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git /default_custom_nodes/ComfyUI-Manager && \
