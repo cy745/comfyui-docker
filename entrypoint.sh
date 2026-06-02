@@ -13,15 +13,15 @@ if [ -d /default_custom_nodes ] && [ ! -z "$(ls -A /default_custom_nodes 2>/dev/
     done
 fi
 
-# Install any pending custom node dependencies
+# Install any pending custom node dependencies (continue on failure)
 for node_dir in /app/custom_nodes/*/; do
     name=$(basename "$node_dir")
     if [ -f "$node_dir/requirements.txt" ]; then
         echo "Installing dependencies for $name (requirements.txt)..."
-        pip install -r "$node_dir/requirements.txt" -q
+        pip install -r "$node_dir/requirements.txt" -q || echo "Warning: $name deps failed, continuing"
     elif [ -f "$node_dir/pyproject.toml" ]; then
         echo "Installing $name (pyproject.toml)..."
-        pip install -e "$node_dir" -q
+        pip install -e "$node_dir" -q || echo "Warning: $name deps failed, continuing"
     fi
 done
 
