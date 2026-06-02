@@ -25,5 +25,20 @@ for node_dir in /app/custom_nodes/*/; do
     fi
 done
 
+# Patch transformers to use weights_only=False (torch 2.5.1 compat)
+python3 -c "
+import re
+p = '/usr/local/lib/python3.10/dist-packages/transformers/modeling_utils.py'
+with open(p, 'r') as f:
+    c = f.read()
+c = c.replace(
+    'return torch.load(checkpoint_path, map_location=map_location, weights_only=weights_only, **extra_args)',
+    'return torch.load(checkpoint_path, map_location=map_location, weights_only=False, **extra_args)'
+)
+with open(p, 'w') as f:
+    f.write(c)
+print('Applied torch.load compat patch')
+" 2>/dev/null || true
+
 echo "Starting ComfyUI..."
 exec "$@"
