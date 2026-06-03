@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04
+FROM nvidia/cuda:12.4.0-runtime-ubuntu22.04
 
 LABEL description="ComfyUI with NVIDIA GPU support"
 
@@ -25,11 +25,11 @@ RUN ln -s /usr/bin/python3 /usr/bin/python && \
     pip install --upgrade pip
 
 # ============================================================
-# Stage 2: PyTorch with CUDA (rarely changes)
+# Stage 2: PyTorch with CUDA 12.4
 # BuildKit --mount=type=cache persists pip downloads across builds
 # ============================================================
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
 
 # ============================================================
 # Stage 3: ComfyUI Python dependencies
@@ -58,7 +58,7 @@ RUN git init && \
 # Stage 5: Build dependencies for flash-attn (late to avoid cache break)
 # ============================================================
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-nvcc-12-1 build-essential && \
+    cuda-nvcc-12-4 build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 # Attention optimizations for SeedVR2
