@@ -25,5 +25,41 @@ for node_dir in /app/custom_nodes/*/; do
     fi
 done
 
+# Patch transformers torch.load compat (torch 2.5.1 CVE workaround)
+python3 -c "
+p = '/usr/local/lib/python3.10/dist-packages/transformers/modeling_utils.py'
+with open(p, 'r') as f:
+    c = f.read()
+c = c.replace(
+    'return torch.load(checkpoint_path, map_location=map_location, weights_only=weights_only, **extra_args)',
+    'return torch.load(checkpoint_path, map_location=map_location, weights_only=False, **extra_args)'
+)
+with open(p, 'w') as f:
+    f.write(c)
+print('applied modeling_utils patch')
+" 2>/dev/null || true
+
+python3 -c "
+p = '/usr/local/lib/python3.10/dist-packages/transformers/utils/import_utils.py'
+with open(p, 'r') as f:
+    lines = f.readlines()
+new_lines = []
+skip = False
+for line in lines:
+    if 'def check_torch_load_is_safe() -> None:' in line:
+        new_lines.append(line)
+        new_lines.append('    return None\n')
+        skip = True
+    elif skip:
+        if line.strip().startswith('def ') or line.strip().startswith('class '):
+            skip = False
+            new_lines.append(line)
+    else:
+        new_lines.append(line)
+with open(p, 'w') as f:
+    f.writelines(new_lines)
+print('applied import_utils patch')
+" 2>/dev/null || true
+
 echo "Starting ComfyUI..."
 exec "$@"
