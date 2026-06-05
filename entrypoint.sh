@@ -67,7 +67,7 @@ LS_DIR="/app/models/lsnet/sharingan"
 mkdir -p "$LS_DIR"
 BASE_URL="https://huggingface.co/heathcliff01/Kaloscope2.0/resolve/main"
 PROXY="http://host.docker.internal:10081"
-for entry in "config.json:100" "class_mapping.csv:700000" "best_checkpoint.pth:2684354560"; do
+for entry in "config.json:10" "class_mapping.csv:700000" "best_checkpoint.pth:2684354560"; do
     IFS=':' read -r name min_size <<< "$entry"
     f="$LS_DIR/$name"
     size=$(stat -c%s "$f" 2>/dev/null || echo 0)
