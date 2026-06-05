@@ -61,5 +61,29 @@ with open(p, 'w') as f:
 print('applied import_utils patch')
 " 2>/dev/null || true
 
+# Download LSNet model files if missing
+echo "Checking LSNet models..."
+LS_DIR="/app/models/lsnet/sharingan"
+mkdir -p "$LS_DIR"
+BASE_URL="https://huggingface.co/heathcliff01/Kaloscope2.0/resolve/main"
+PROXY="http://host.docker.internal:10081"
+for entry in "config.json:100" "class_mapping.csv:700000" "best_checkpoint.pth:2684354560"; do
+    IFS=':' read -r name min_size <<< "$entry"
+    f="$LS_DIR/$name"
+    size=$(stat -c%s "$f" 2>/dev/null || echo 0)
+    if [ "$size" -ge "$min_size" ] 2>/dev/null; then
+        echo "  [SKIP] $name"
+    else
+        echo "  [DOWNLOAD] $name..."
+        rm -f "$f"
+        if [ "$name" = "best_checkpoint.pth" ]; then
+            remote="448-90.13/best_checkpoint.pth"
+        else
+            remote="$name"
+        fi
+        curl -sL --connect-timeout 30 -x "$PROXY" -o "$f" "$BASE_URL/$remote" || echo "  [WARN] $name download failed"
+    fi
+done
+
 echo "Starting ComfyUI..."
 exec "$@"
