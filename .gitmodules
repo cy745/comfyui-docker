@@ -22,3 +22,6 @@
 [submodule "storage/custom_nodes/ComfyUI-Prompt-Assistant"]
 	path = storage/custom_nodes/ComfyUI-Prompt-Assistant
 	url = https://github.com/yawiii/ComfyUI-Prompt-Assistant.git
+[submodule "storage/custom_nodes/comfyui-lsnet"]
+	path = storage/custom_nodes/comfyui-lsnet
+	url = https://github.com/spawner1145/comfyui-lsnet.git

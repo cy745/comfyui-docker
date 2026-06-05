@@ -11,5 +11,6 @@ storage/custom_nodes/*
 !storage/custom_nodes/.gitkeep
 !storage/custom_nodes/ComfyUI-*
 !storage/custom_nodes/ComfyUI_*
+!storage/custom_nodes/comfyui-lsnet
 # Ignore embedded git repos in custom_nodes
 storage/custom_nodes/*/.git
