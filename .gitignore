@@ -1,6 +1,7 @@
 .env
 storage/models/*
 !storage/models/.gitkeep
+!storage/models/toriigate/
 storage/input/*
 !storage/input/.gitkeep
 storage/output/*

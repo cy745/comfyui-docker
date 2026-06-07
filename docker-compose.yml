@@ -26,3 +26,27 @@ services:
               count: all
               capabilities: [gpu]
     restart: unless-stopped
+
+  llama-cpp:
+    image: ghcr.io/ggerganov/llama.cpp:server-cuda
+    container_name: llama-cpp
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./storage/models/toriigate:/models
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-all}
+    command: >
+      --host 0.0.0.0 --port 8080
+      -m /models/ToriiGate-0.5-Q4_K_M.gguf
+      --mmproj /models/ToriiGate-0.5-fp16.mmproj.gguf
+      -b 2048 -ub 1024 -fa on -fit on -fitt 1024 -ngl 999
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
