@@ -25,3 +25,6 @@
 [submodule "storage/custom_nodes/comfyui-lsnet"]
 	path = storage/custom_nodes/comfyui-lsnet
 	url = https://github.com/spawner1145/comfyui-lsnet.git
+[submodule "storage/custom_nodes/comfyui_toriigate"]
+	path = storage/custom_nodes/comfyui_toriigate
+	url = https://github.com/litch230/comfyui_toriigate.git
