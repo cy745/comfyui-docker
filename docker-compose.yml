@@ -28,7 +28,9 @@ services:
     restart: unless-stopped
 
   llama-cpp:
-    image: ghcr.io/ggerganov/llama.cpp:server-cuda
+    build:
+      context: .
+      dockerfile: llama-cpp.Dockerfile
     container_name: llama-cpp
     ports:
       - "8080:8080"
